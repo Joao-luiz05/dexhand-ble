@@ -40,23 +40,23 @@
 ManagedServo managedServos[NUM_SERVOS] = 
 {
   // Arduino D Pin, Min, Max, Default, Inverted
-  ManagedServo(2, 30, 110, 30, false),  // Index Lower 0
+  ManagedServo(2, 30, 140, 30, false),  // Index Lower 0
   ManagedServo(1, 30, 140, 30, true),  // Index Upper 1
-  ManagedServo(5, 30, 120, 30, false),  // Middle Lower 2
-  ManagedServo(4, 30, 150, 30, true),  // Middle Upper 3
-  ManagedServo(3, 30, 150, 30, true),   // Ring Lower 4
-  ManagedServo(0, 30, 100, 30, false),   // Ring Upper  5
-  ManagedServo(7, 30, 140, 30, true),   // Pinky Lower 6
-  ManagedServo(6, 30, 100, 30, false),   // Pinky Upper 7
-  ManagedServo(10, 30, 100, 30, false),  // Index Tip 8
-  ManagedServo(11, 30, 90, 30, false), // Middle Tip 9
-  ManagedServo(12, 30, 120, 30, true),  // Ring Tip 10
-  ManagedServo(13, 30, 130, 30, true),  // Pinky Tip 11
-  ManagedServo(14, 30, 130, 30, false),  // Thumb Tip 12
-  ManagedServo(15, 30, 150, 30, false),  // Thumb Right 13
-  ManagedServo(16, 20, 120, 20, false),  // Thumb Left 14
-  ManagedServo(17, 30, 90, 30, false),  // Thumb Rotate 15
-  ManagedServo(9, 30, 160, 95, false),  // Wrist Left 16
+  ManagedServo(0, 30, 120, 30, false),  // Middle Lower 2
+  ManagedServo(14, 30, 150, 30, true),  // Middle Upper 3
+  ManagedServo(16, 30, 150, 30, true),   // Ring Lower 4
+  ManagedServo(18, 30, 150, 30, false),   // Ring Upper 5
+  ManagedServo(17, 30, 140, 30, true),   // Pinky Lower 6
+  ManagedServo(15, 30, 150, 30, false),   // Pinky Upper 7
+  ManagedServo(11, 30, 165, 30, false),  // Index Tip 8
+  ManagedServo(12, 30, 165, 30, false), // Middle Tip 9
+  ManagedServo(9, 30, 175, 30, true),  // Ring Tip 10
+  ManagedServo(13, 30, 165, 30, true),  // Pinky Tip 11
+  ManagedServo(3, 30, 175, 30, false),  // Thumb Tip 12
+  ManagedServo(5, 30, 165, 30, false),  // Thumb Right 13
+  ManagedServo(6, 20, 160, 20, false),  // Thumb Left 14
+  ManagedServo(4, 30, 90, 30, false),  // Thumb Rotate 15
+  ManagedServo(7, 30, 160, 95, false),  // Wrist Left 16
   ManagedServo(8, 30, 160, 95, false)   // Wrist Right 17
 };
 
