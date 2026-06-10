@@ -1,4 +1,4 @@
-# personal FORK of the dexhand-ble
+# Dexhand-ble (fork of original)
 The DexHand is an anthropomorphic robot hand that we have selected as a reference / starting point for a bachelor's thesis in mechatronics engineering
 
 ![make-a-gif_AdobeExpress-2](https://github.com/iotdesignshop/dexhand-ble/assets/2821763/de311dc5-b41e-4f2f-b8e6-849a51983018)
