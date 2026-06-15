@@ -322,9 +322,9 @@ class DexHandApp(tk.Tk):
             b.pack(fill="x", padx=10, pady=2)
             desc = GESTURE_DESCRIPTIONS.get(label)
             if desc:
-                b.bind("<Enter>", lambda e, d=desc: self._show_tooltip(d, e))
-                b.bind("<Leave>", lambda e: self._hide_tooltip())
-                b.bind("<Motion>", lambda e: self._move_tooltip(e))
+                b.bind("<Enter>", lambda e, d=desc: self._show_tooltip(d, e), add="+")
+                b.bind("<Leave>", lambda e: self._hide_tooltip(), add="+")
+                b.bind("<Motion>", lambda e: self._move_tooltip(e), add="+")
 
         ttk.Separator(parent, orient="horizontal").pack(fill="x", padx=10, pady=10)
 
@@ -715,17 +715,20 @@ class DexHandApp(tk.Tk):
     # ── Button factory ───────────────────────────────────────────────────────
 
     def _styled_btn(self, parent, text, command, wide=False, small=False):
-        font = ("Segoe UI", 8) if small else ("Segoe UI", 10)
+        base_font = ("Segoe UI", 8) if small else ("Segoe UI", 10)
+        hover_font = ("Segoe UI", 8, "bold") if small else ("Segoe UI", 10, "bold")
         px = 6 if small else 10
         py = 2 if small else 5
         btn = tk.Button(parent, text=text, command=command,
                         bg=BG_CARD, fg=TEXT_LIGHT,
                         activebackground=ACCENT_HOVER, activeforeground="white",
-                        relief="flat", font=font,
+                        relief="flat", font=base_font,
                         padx=px, pady=py, cursor="hand2",
                         bd=0, highlightthickness=0)
-        def on_enter(e): btn.config(bg=ACCENT)
-        def on_leave(e): btn.config(bg=BG_CARD)
+        def on_enter(e):
+            btn.config(bg=ACCENT_ACTIVE, bd=2, relief="solid", font=hover_font)
+        def on_leave(e):
+            btn.config(bg=BG_CARD, bd=0, relief="flat", font=base_font)
         btn.bind("<Enter>", on_enter)
         btn.bind("<Leave>", on_leave)
         return btn
