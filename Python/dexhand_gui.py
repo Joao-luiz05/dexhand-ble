@@ -90,6 +90,20 @@ CANNED_GESTURES = [
     ("Thumb Test", "thumbtest"),
 ]
 
+GESTURE_DESCRIPTIONS = {
+    "Default":    "Return the hand to the neutral resting pose.",
+    "Count":      "Curl fingers in sequence from index through pinky.",
+    "Wave":       "Open and close the hand in a wave-style motion.",
+    "Shaka":      "Extend thumb and pinky while curling the middle fingers.",
+    "Fist (0)":   "Close all fingers into a basic fist.",
+    "One":        "Raise only the index finger.",
+    "Two":        "Raise the index and middle fingers.",
+    "Three":      "Raise the index, middle, and ring fingers.",
+    "Four":       "Raise all fingers except the thumb.",
+    "Finger Test": "Sweep each finger through its range for calibration.",
+    "Thumb Test":  "Exercise the thumb through its full range of motion.",
+}
+
 FINGER_COMMANDS = [
     ("Index Max",    "fingermax:0"),
     ("Index Min",    "fingermin:0"),
@@ -306,15 +320,27 @@ class DexHandApp(tk.Tk):
         for label, cmd in CANNED_GESTURES:
             b = self._styled_btn(parent, label, lambda c=cmd: self._send(c), wide=True)
             b.pack(fill="x", padx=10, pady=2)
+            desc = GESTURE_DESCRIPTIONS.get(label)
+            if desc:
+                b.bind("<Enter>", lambda e, d=desc: self._show_tooltip(d, e))
+                b.bind("<Leave>", lambda e: self._hide_tooltip())
+                b.bind("<Motion>", lambda e: self._move_tooltip(e))
 
         ttk.Separator(parent, orient="horizontal").pack(fill="x", padx=10, pady=10)
 
         tk.Label(parent, text="FINGER CONTROLS", bg=BG_PANEL, fg=TEXT_DIM,
                  font=("Segoe UI", 9, "bold")).pack(anchor="w", padx=14, pady=(0, 4))
 
-        for label, cmd in FINGER_COMMANDS:
-            b = self._styled_btn(parent, label, lambda c=cmd: self._send(c), wide=True)
-            b.pack(fill="x", padx=10, pady=2)
+        finger_frame = tk.Frame(parent, bg=BG_PANEL)
+        finger_frame.pack(fill="x", padx=10)
+        finger_frame.columnconfigure(0, weight=1)
+        finger_frame.columnconfigure(1, weight=1)
+
+        for idx, (label, cmd) in enumerate(FINGER_COMMANDS):
+            col = idx % 2
+            row = idx // 2
+            b = self._styled_btn(finger_frame, label, lambda c=cmd: self._send(c), wide=False)
+            b.grid(row=row, column=col, sticky="ew", padx=4, pady=2)
 
         ttk.Separator(parent, orient="horizontal").pack(fill="x", padx=10, pady=10)
 
@@ -424,11 +450,19 @@ class DexHandApp(tk.Tk):
         tk.Label(parent, text="COLOUR LEGEND", bg=BG_PANEL, fg=TEXT_DIM,
                  font=("Segoe UI", 9, "bold")).pack(anchor="w", padx=14, pady=(0, 4))
 
-        for group, color in GROUP_COLORS.items():
-            row = tk.Frame(parent, bg=BG_PANEL)
-            row.pack(anchor="w", padx=14, pady=1)
-            tk.Label(row, bg=color, width=2, height=1).pack(side="left", padx=(0, 6))
-            tk.Label(row, text=group.capitalize(), bg=BG_PANEL, fg=TEXT_LIGHT,
+        legend_frame = tk.Frame(parent, bg=BG_PANEL)
+        legend_frame.pack(fill="x", padx=14, pady=1)
+        legend_frame.columnconfigure(0, weight=1)
+        legend_frame.columnconfigure(1, weight=1)
+
+        items = list(GROUP_COLORS.items())
+        for idx, (group, color) in enumerate(items):
+            row_num = idx // 2
+            col_num = (idx % 2)
+            item_frame = tk.Frame(legend_frame, bg=BG_PANEL)
+            item_frame.grid(row=row_num, column=col_num, sticky="w", padx=(0, 20), pady=2)
+            tk.Label(item_frame, bg=color, width=2, height=1).pack(side="left", padx=(0, 6))
+            tk.Label(item_frame, text=group.capitalize(), bg=BG_PANEL, fg=TEXT_LIGHT,
                      font=("Segoe UI", 9)).pack(side="left")
 
     # ── Canvas drawing ───────────────────────────────────────────────────────
@@ -535,6 +569,33 @@ class DexHandApp(tk.Tk):
             self.canvas.bbox(self._tip),
             fill=BG_CARD, outline=SERVO_OUTLINE, tags="tooltip")
         self.canvas.tag_raise(self._tip)
+
+    def _show_tooltip(self, text, event):
+        self._hide_tooltip()
+        self._tooltip = tk.Toplevel(self)
+        self._tooltip.wm_overrideredirect(True)
+        self._tooltip.wm_attributes("-topmost", True)
+        label = tk.Label(self._tooltip, text=text, bg=BG_CARD, fg=TEXT_LIGHT,
+                         font=("Segoe UI", 8), bd=1, relief="solid",
+                         padx=6, pady=4, wraplength=220, justify="left")
+        label.pack()
+        self._position_tooltip(event.x_root, event.y_root)
+
+    def _move_tooltip(self, event):
+        if getattr(self, "_tooltip", None):
+            self._position_tooltip(event.x_root, event.y_root)
+
+    def _position_tooltip(self, x, y):
+        if getattr(self, "_tooltip", None):
+            self._tooltip.wm_geometry(f"+{x + 14}+{y + 18}")
+
+    def _hide_tooltip(self):
+        if getattr(self, "_tooltip", None):
+            try:
+                self._tooltip.destroy()
+            except Exception:
+                pass
+            self._tooltip = None
 
     def _hide_hover_tip(self):
         self.canvas.delete("tooltip")
